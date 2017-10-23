@@ -11,9 +11,19 @@ var exec = cordova.require('cordova/exec'),
             STANDARDISED: 1
         },
         CONNECTION_TIMED_OUT: {
-            ANDROID: [-118, -2],
+            ANDROID: [-118],
             IOS: [57],
             STANDARDISED: 2
+        },
+        GENERIC_SOCKET_ERROR: {
+            ANDROID: [-2],
+            IOS: [32],
+            STANDARDISED: 3
+        },
+        SOCKET_NOT_CONNECTED: {
+            ANDROID: [-15],
+            IOS: [57],
+            STANDARDISED: 4
         }
     },
     OS = platform.id === 'android' ? 'ANDROID' : 'IOS';
