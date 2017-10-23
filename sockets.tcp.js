@@ -50,7 +50,9 @@ exports.setKeepAlive = function(socketId, enabled, delay, callback) {
             callback(0);
         };
         var fail = callback && function(error) {
-            exports.onReceiveError.fire(error);
+                var sendInfo = createErrorObj(error, socketId);
+
+                exports.onReceiveError.fire(sendInfo);
         };
         exec(win, fail, 'ChromeSocketsTcp', 'setKeepAlive', [socketId, enabled, delay]);
     } else {
@@ -64,7 +66,9 @@ exports.setNoDelay = function(socketId, noDelay, callback) {
             callback(0);
         };
         var fail = callback && function(error) {
-            exports.onReceiveError.fire(error);
+                var sendInfo = createErrorObj(error, socketId);
+
+                exports.onReceiveError.fire(sendInfo);
         };
         exec(win, fail, 'ChromeSocketsTcp', 'setNoDelay', [socketId, noDelay]);
     } else {
@@ -77,7 +81,9 @@ exports.connect = function(socketId, peerAddress, peerPort, callback) {
         callback(0);
     };
     var fail = callback && function(error) {
-        exports.onReceiveError.fire(error);
+            var sendInfo = createErrorObj(error, socketId);
+
+            exports.onReceiveError.fire(sendInfo);
     };
     exec(win, fail, 'ChromeSocketsTcp', 'connect', [socketId, peerAddress, peerPort]);
 };
@@ -95,7 +101,9 @@ exports.secure = function(socketId, options, callback) {
         callback(0);
     };
     var fail = callback && function(error) {
-        exports.onReceiveError.fire(error);
+            var sendInfo = createErrorObj(error, socketId);
+
+            exports.onReceiveError.fire(sendInfo);
     };
     exec(win, fail, 'ChromeSocketsTcp', 'secure', [socketId, options]);
 };
@@ -113,12 +121,8 @@ exports.send = function(socketId, data, callback) {
         callback(sendInfo);
     };
     var fail = callback && function(error) {
-        var sendInfo = {
-            bytesSent: 0,
-            resultCode: error.resultCode,
-            message: error.message,
-            socketId: socketId
-        };
+            var sendInfo = createErrorObj(error, socketId);
+
         exports.onReceiveError.fire(sendInfo);
     };
     if (data.byteLength == 0) {
@@ -158,6 +162,15 @@ exports.pipeToFile = function(socketId, options, callback) {
 
 exports.onReceive = new Event('onReceive');
 exports.onReceiveError = new Event('onReceiveError');
+
+function createErrorObj(error, socketId) {
+    return {
+        bytesSent: 0,
+        resultCode: error.resultCode,
+        message: error.message,
+        socketId: socketId
+    };
+}
 
 function registerReceiveEvents() {
 
