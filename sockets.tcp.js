@@ -24,6 +24,11 @@ var exec = cordova.require('cordova/exec'),
             ANDROID: [-15],
             IOS: [57],
             STANDARDISED: 4
+        },
+        CONNECTION_REFUSED: {
+            ANDROID: [-104],
+            IOS: [61],
+            STANDARDISED: 5
         }
     },
     OS = platform.id === 'android' ? 'ANDROID' : 'IOS';
