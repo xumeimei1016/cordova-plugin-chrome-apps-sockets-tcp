@@ -178,10 +178,18 @@ exports.pipeToFile = function(socketId, options, callback) {
 exports.onReceive = new Event('onReceive');
 exports.onReceiveError = new Event('onReceiveError');
 
+function getStandardiseErrorCode(errorCode) {
+    var matchedError = Object.keys(ERROR_CODES).find(function (type) {
+        return ERROR_CODES[type][OS].includes(errorCode);
+    });
+
+    return matchedError ? ERROR_CODES[matchedError].STANDARDISED : errorCode;
+}
+
 function createErrorObj(error, socketId) {
     return {
         bytesSent: 0,
-        resultCode: error.resultCode,
+        resultCode: getStandardiseErrorCode(error.resultCode),
         message: error.message,
         socketId: socketId
     };
@@ -236,14 +244,6 @@ function registerReceiveEvents() {
                 }
             };
         })();
-    }
-
-    function getStandardiseErrorCode(errorCode) {
-        var matchedError = Object.keys(ERROR_CODES).find(function (type) {
-                return ERROR_CODES[type][OS].includes(errorCode);
-            });
-
-        return matchedError ? ERROR_CODES[matchedError].STANDARDISED : errorCode;
     }
 
     var fail = function (info) {
